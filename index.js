@@ -17,12 +17,17 @@ async function run() {
     try {
       await client.connect();
       console.log('db connect')
+        const productCollection = client.db("abcComputer").collection('products');
+
       app.post('/uploadPd',async(req,res)=>{
           const product = req.body;
           console.log(product)
+          const result = await productCollection.insertOne(product);
+          res.send({success:"product upload success"})
+
       })
     } finally {
-      await client.close();
+      
     }
   }
   run().catch(console.dir);
