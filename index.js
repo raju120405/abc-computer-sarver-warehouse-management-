@@ -1,8 +1,9 @@
 const express = require('express');
 const app = express();
 var cors = require('cors');
-require('dotenv').config()
-app.use(cors())
+require('dotenv').config();
+app.use(cors());
+app.use(express.json())
 const port = process.env.PORT || 5000;
 
 
@@ -16,6 +17,10 @@ async function run() {
     try {
       await client.connect();
       console.log('db connect')
+      app.post('/uploadPd',async(req,res)=>{
+          const product = req.body;
+          console.log(product)
+      })
     } finally {
       await client.close();
     }
