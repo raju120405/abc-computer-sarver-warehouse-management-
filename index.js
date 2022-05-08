@@ -15,42 +15,48 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 
 
 async function run() {
-    try {
-      await client.connect();
-      console.log('db connect')
-        const productCollection = client.db("abcComputer").collection('products');
+  try {
+    await client.connect();
+    console.log('db connect')
+    const productCollection = client.db("abcComputer").collection('products');
+    const orderCollection = client.db("abcComputer").collection('orders');
+    app.post('/addOrder', async (req, res) => {
+      const orderInfo = req.body;
+      console.log(orderInfo)
+    })
+    app.get('/products', async (req, res) => {
+      const query = {}
+      const cursor = productCollection.find(query);
+      const product = await cursor.toArray();
+      res.send(product)
+    })
 
-        app.get('/products', async(req, res)=>{
-            const query = {}
-            const cursor = productCollection.find(query);
-            const product = await cursor.toArray();
-            res.send(product)
-        })
+    app.post("/login", (req, res) => {
+      const email = req.body;
+      console.log(email)
 
-        app.post("/login",(req,res)=>{
-            const email = req.body;
-            console.log(email)
+    })
 
-        })
+    app.post('/uploadPd', async (req, res) => {
+      const product = req.body;
+      console.log(product)
+      const result = await productCollection.insertOne(product);
+      res.send({ success: "product upload success" })
 
-      app.post('/uploadPd',async(req,res)=>{
-          const product = req.body;
-          console.log(product)
-          const result = await productCollection.insertOne(product);
-          res.send({success:"product upload success"})
+    })
 
-      })
-    
-    } finally {
-      
-    }
+
+
+  } finally {
+
   }
-  run().catch(console.dir);
+}
+run().catch(console.dir);
 
-app.get('/',(req,res)=>{
-    res.send('running my node abc computer server')
+app.get('/', (req, res) => {
+  res.send('running my node abc computer server')
 });
 
-app.listen(port,()=>{
-    console.log('abc computer server is running');
+app.listen(port, () => {
+  console.log('abc computer server is running');
 })
